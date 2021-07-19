@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
-import './TinderCards.css';
-import TinderCard from 'react-tinder-card';
+import React, { useState, useEffect } from "react";
+import "./TinderCards.css";
+import TinderCard from "react-tinder-card";
+// do not import axios module
+import axios from "./axios.js";
 
 function TinderCards() {
-  const [people, setPeople] = useState([
-    {
-      name: 'Elon Musk',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Elon_Musk_Royal_Society_%28crop1%29.jpg',
-    },
-    {
-      name: 'Jeff Bezos',
-      url: 'https://pbs.twimg.com/profile_images/669103856106668033/UF3cgUk4_400x400.jpg',
-    },
-  ]);
+  const [people, setPeople] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const req = await axios.get("/sparko/card");
+
+      setPeople(req.data);
+    }
+
+    fetchData();
+  }, []);
+
+  console.log(people)
 
   const onSwipe = (direction, nameToDelete) => {
-    console.log('You swiped: ' + direction);
-    console.log('Removing: ' + nameToDelete);
+    console.log("You swiped: " + direction);
+    console.log("Removing: " + nameToDelete);
   };
 
   const onCardLeftScreen = (myIdentifier) => {
-    console.log(myIdentifier + ' left the screen');
+    console.log(myIdentifier + " left the screen");
   };
 
   return (
@@ -33,10 +38,10 @@ function TinderCards() {
               key={person.name}
               onSwipe={(dir) => onSwipe(dir, person.name)}
               onCardLeftScreen={() => onCardLeftScreen(person.name)}
-              preventSwipe={['up', 'down']}
+              preventSwipe={["up", "down"]}
             >
               <div
-                style={{ backgroundImage: `url(${person.url})` }}
+                style={{ backgroundImage: `url(${person.imgUrl})` }}
                 className="card"
               >
                 <h3>{person.name}</h3>
